@@ -122,6 +122,31 @@ module SendGridActionMailer
         expect(ret.status_code).to eq('200')
       end
 
+      describe 'personalizations' do
+        it 'should use personalizations if supplied' do
+          mail = Mail.new(
+              from: 'taco@cat.limo',
+              subject: 'Hello, world!',
+              personalizations: [
+                  {
+                      to: [{email: 'bob@example.com'}],
+                      substitutions: {'__FNAME__' => 'Bob'},
+                  },
+                  {
+                      to: [{email: 'alex@example.com', name: 'Alex Jones'}],
+                      substitutions: {'__FNAME__' => 'Alex'},
+                  },
+              ]
+          )
+
+          mailer.deliver!(mail)
+          expect(client.sent_mail['personalizations'][0]).to eq('to' => [{'email' => 'bob@example.com'}],
+                                                                'substitutions' => {:'__FNAME__' => 'Bob'})
+          expect(client.sent_mail['personalizations'][1]).to eq('to' => [{'email' => 'alex@example.com', 'name' => 'Alex Jones'}],
+                                                                'substitutions' => {:'__FNAME__' => 'Alex'})
+        end
+      end
+
       context 'to with a friendly name' do
         before { mail.to = 'Test SendGrid <test@sendgrid.com>' }
 
