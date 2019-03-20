@@ -130,20 +130,20 @@ module SendGridActionMailer
               personalizations: [
                   {
                       to: [{email: 'bob@example.com'}],
-                      substitutions: {'__FNAME__' => 'Bob'},
+                      substitutions: {FNAME: 'Bob'},
                   },
                   {
                       to: [{email: 'alex@example.com', name: 'Alex Jones'}],
-                      substitutions: {'__FNAME__' => 'Alex'},
+                      substitutions: {FNAME: 'Alex'},
                   },
               ]
           )
 
           mailer.deliver!(mail)
           expect(client.sent_mail['personalizations'][0]).to eq('to' => [{'email' => 'bob@example.com'}],
-                                                                'substitutions' => {:'__FNAME__' => 'Bob'})
+                                                                'substitutions' => {'{{FNAME}}' => 'Bob'})
           expect(client.sent_mail['personalizations'][1]).to eq('to' => [{'email' => 'alex@example.com', 'name' => 'Alex Jones'}],
-                                                                'substitutions' => {:'__FNAME__' => 'Alex'})
+                                                                'substitutions' => {'{{FNAME}}' => 'Alex'})
         end
       end
 
