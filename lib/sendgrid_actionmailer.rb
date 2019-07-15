@@ -90,7 +90,7 @@ module SendGridActionMailer
                 value.each {|to| p.add_to(Email.new(email: to[:email], name: to[:name]))}
               when :substitutions
                 value.each do |substitution_key, substitution_value|
-                  p.add_substitution(Substitution.new(key: "{{#{substitution_key}}}", value: substitution_value))
+                  p.add_substitution(Substitution.new(key: substitution_key, value: substitution_value))
                 end
               else
                 raise "Don't know how to handle #{key} = #{value.inspect} in personalizations yet"
